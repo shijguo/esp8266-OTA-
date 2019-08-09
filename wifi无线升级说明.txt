@@ -1,0 +1,35 @@
+##如何使用自己的云服务器进行云端升级?##
+
+ota_upgrade.c文件中有一个头文件(#include "hsuser.h" )是我自己写的,其实对你们来说用处不大,仅仅把两个无线升级相关的函数做个声明,方便全局调用而已;
+本人测试的时候是通过串口发送自定义命令去触发升级的,你们也可以自己写一个命令或者按键去触发;下面是我在调用无线升级函数的代码:
+
+case OTA:
+
+{ 
+						
+  os_printf("ready to upgrade\r\n");
+	
+					 
+  char serverip[]={192,168,0,***};
+	//这里是本地服务器的ip地址,也可以是远程服务器ip地址.					  
+  uint16_t port = 807 ;
+			//本地端口或者远程服务器端口,看自己使用选择		
+  char path[] = "esp_upgrade/" ;	       //文件路径,easywebserver的bin文件所存放的路径(这里路径最好不要用\反斜杠)		
+			 
+  ota_start_Upgrade( 2 , serverip, port, path) ;//无线升级开始				 
+  break;
+}
+
+
+其它说明:
+
+ case UPGRADE_FW_BIN1: file = "user2.4096.new.4.bin"; break; //  user2.bin
+ case UPGRADE_FW_BIN2: file = "user1.4096.new.4.bin"; break; // user1.bin
+以上两个文件名是我编译bin时系统自动生成的,所以这里写什么名字取决于你自己的文件名.
+
+无线升级前请确保wifi模块已经连接上路由器,如果的远程服务器请确保路由器能上网.
+
+
+开始无线升级前请先仔细阅读文件夹里的两个pdf文件
+1. 2a-esp8266-sdk_getting_started_guide_cn
+2. 99c-esp8266_fota_upgrade_cn
